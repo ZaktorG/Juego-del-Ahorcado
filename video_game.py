@@ -41,10 +41,46 @@ TITLE_GAME_ERROR = """       _                              _      _            
 
 *Favor de ingresar una opción valida*
 Ingrese su elección: """
+
+WIN = """  
+   ______                       __       ______
+  / ____/___ _____  ____ ______/ /____  / / / /
+ / / __/ __ `/ __ \/ __ `/ ___/ __/ _ \/ / / / 
+/ /_/ / /_/ / / / / /_/ (__  ) /_/  __/_/_/_/  
+\____/\__,_/_/ /_/\__,_/____/\__/\___(_|_|_)  
+
+
+[1] Volver a Jugar
+[2] Reglas
+[3] Salir
+
+Ingrese su elección: """
+
+LOSE = """  
+   ___             _ _     _         _  _  _ _
+  / _ \___ _ __ __| (_)___| |_ ___  / \/ \/  / 
+ / /_)/ _ \ '__/ _` | / __| __/ _ \/  /  /  /
+/ ___/  __/ | | (_| | \__ \ ||  __/\_/\_/\_/ 
+\/    \___|_|  \__,_|_|___/\__\___\/ \/ \/                                          
+                                             
+[1] Volver a Jugar
+[2] Reglas
+[3] Salir
+
+Ingrese su elección: """
+
+RULES = """* Tienes 10 vidas
+* Tienes que encontrar la palabra
+* Solo se puede una palabra a la vez
+
+[1] Volver a Jugar
+[2] Reglas
+[3] Salir
+
+Ingrese su elección: """
 def game(word_game, word_size):
     os.system("clear")
-    # print(word_game)
-    vidas = 5
+    vidas = 10
     word_game_result = ""
     words_input = []
     for i in range(word_size):
@@ -52,6 +88,7 @@ def game(word_game, word_size):
     
     while vidas > 0 and word_game != word_game_result:
         word_search = False
+        print(words_input)
         word_input = input("Ingrese una letra: ")
         for value in range(word_size):
             if word_input == word_game[value]:
@@ -59,10 +96,9 @@ def game(word_game, word_size):
                 word_search = True
         if not word_search:
             vidas -= 1
-        # Solo falta reducir la palabra a un solo string para comparar
         word_game_result = reduce(lambda a, b: a + b, words_input)
-        print(words_input, vidas, word_game_result)
-    if word_game == word_game:
+        os.system("clear")
+    if word_game == word_game_result:
         return True
     else:
         return False
@@ -75,6 +111,18 @@ def random_word(word, words_size):
     for value in word:
         word_size += 1
     return  word, word_size
+
+def normalize(word_game): 
+        replacements = (
+            ("á", "a"),
+            ("é", "e"),
+            ("í", "i"),
+            ("ó", "o"),
+            ("ú", "u"),
+        )
+        for a, b in replacements:
+            word_game = word_game.replace(a, b).replace(a.upper(), b.upper())
+        return word_game
     
 def read_file():
     words = {}
@@ -92,18 +140,20 @@ def run():
     while choice_menu != "3":
         if choice_menu == "1":
             word_game, word_size = random_word(words, words_size) 
-            if game(word_game, word_size):
+            if game(normalize(word_game), word_size):
                 os.system("clear")
-                print("Ganaste")
-            choice_menu = input("\nstop")
+                choice_menu = input(WIN)
+            else:
+                os.system("clear")
+                choice_menu = input("La palabra era: " + word_game + LOSE)
         elif choice_menu == "2":
-            pass 
+            os.system("clear")
+            choice_menu = input(RULES)
         elif choice_menu == "3":
-            pass 
+            print("Bye") 
         else:
             os.system("clear")
             choice_menu = input(TITLE_GAME_ERROR)
         
-
 if __name__ == "__main__":
     run()
