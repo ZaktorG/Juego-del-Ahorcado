@@ -72,6 +72,7 @@ Ingrese su elección: """
 RULES = """* Tienes 10 vidas
 * Tienes que encontrar la palabra
 * Solo se puede una palabra a la vez
+* Presionar Ctrl + C en juego y sera como si te hubieras rendido
 
 [1] Volver a Jugar
 [2] Reglas
@@ -88,8 +89,13 @@ def game(word_game, word_size):
     
     while vidas > 0 and word_game != word_game_result:
         word_search = False
-        print(words_input)
-        word_input = input("Ingrese una letra: ")
+        print(str(vidas) + " vidas")
+        for value in words_input:
+            print(value, end=" ")
+        try:
+            word_input = input("\n\nIngrese una letra: ")
+        except KeyboardInterrupt:
+            break 
         for value in range(word_size):
             if word_input == word_game[value]:
                 words_input[value] = word_input
@@ -136,24 +142,39 @@ def read_file():
 def run():
     words, words_size = read_file()
     os.system("clear")
-    choice_menu = input(TITLE_GAME) 
+    try:
+       choice_menu = input(TITLE_GAME)
+    except KeyboardInterrupt:
+        choice_menu = "3" 
     while choice_menu != "3":
         if choice_menu == "1":
             word_game, word_size = random_word(words, words_size) 
             if game(normalize(word_game), word_size):
                 os.system("clear")
-                choice_menu = input(WIN)
+                try:
+                    choice_menu = input(WIN)
+                except KeyboardInterrupt:
+                    choice_menu = "3" 
             else:
                 os.system("clear")
-                choice_menu = input("La palabra era: " + word_game + LOSE)
+                try:
+                    choice_menu = input("La palabra era: " + word_game + LOSE)
+                except KeyboardInterrupt:
+                    choice_menu = "3" 
         elif choice_menu == "2":
             os.system("clear")
-            choice_menu = input(RULES)
+            try:
+                choice_menu = input(RULES)
+            except KeyboardInterrupt:
+                choice_menu = "3" 
         elif choice_menu == "3":
             print("Bye") 
         else:
             os.system("clear")
-            choice_menu = input(TITLE_GAME_ERROR)
+            try:
+                choice_menu = input(TITLE_GAME_ERROR)
+            except KeyboardInterrupt:
+                choice_menu = "3" 
         
 if __name__ == "__main__":
     run()
